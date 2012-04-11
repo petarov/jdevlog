@@ -1,0 +1,13 @@
+_.o0 JDevLog 0o._
+
+== Summary
+
+JDevLog is a Java application that reads log messages from the history log of your SVN or GIT repository and produces a Syndication feed.
+
+== Requirements
+
+* Java 1.6 JRE
+
+Please check HISTORY for latest release changes.
+
+Have fun ! ;)
