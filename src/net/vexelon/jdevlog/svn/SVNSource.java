@@ -179,7 +179,7 @@ public class SVNSource implements SCMSource {
         	url = url.replace(repository.getRepositoryRoot(false).getPath(), 
         			String.format("%s/!svn/bc/%d", repository.getRepositoryRoot(false).getPath(), revision));
         	
-        	if (stripRelativePath) {
+        	if (stripRelativePath && !repository.getRepositoryPath("").equals("/") ) {
         		url = url.replace(repository.getRepositoryPath(""), "");
         	}
         } 
