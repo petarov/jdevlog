@@ -27,7 +27,9 @@ public final class Defs {
 	
 	public final static String NEWLINE = System.getProperty("line.separator");
 	public final static String HTML_NEWLINE = "<br>";
-	
+
+	public final static String DEFAULT_FEED_TYPE = "rss_2.0";
+	public final static String DEFAULT_AUTHOR = "jdevlog";
 	public final static String DEFAULT_TITLE = "jdevlog - Version Control RSS generator - https://github.com/petarov/jdevlog";
 	public final static int DEFAULT_EXCERPT_SIZE = 30;
 	public final static int DEFUALT_MAX_ENTRIES = 50;

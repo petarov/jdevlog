@@ -38,7 +38,6 @@ public class ConfigurationBuilder {
 	Map<ConfigOptions, String> parsedOptions = null;
 	
 	public ConfigurationBuilder() {
-		
 	}
 	
 	public Options getCmdLineOptions() {
@@ -46,17 +45,19 @@ public class ConfigurationBuilder {
 		Options options = new Options();
 		
 		options.addOption(ConfigOptions.SOURCE.getShortName(), ConfigOptions.SOURCE.getName(), 
-				true, "http://sipdroid.googlecode.com/svn/trunk/");
+				true, "SCM location, e.g., for SVN: http://svn.apache.org/repos/asf/spamassassin");
 		options.addOption(ConfigOptions.DESTINATION.getShortName(), ConfigOptions.DESTINATION.getName(), 
 				true, "Destination where to write the RSS file, e.g., C:\\Tests\\scm.xml");		
 		options.addOption(ConfigOptions.TYPE.getShortName(), ConfigOptions.TYPE.getName(), 
 				true, "[svn|git]");
+		options.addOption(ConfigOptions.MAXLOG.getShortName(), ConfigOptions.MAXLOG.getName(), 
+				true, "Amount of (latest) log messages to fetch.");
 		options.addOption(ConfigOptions.USERNAME.getShortName(), ConfigOptions.USERNAME.getName(), 
 				true, "Username for authentication.").getOption(ConfigOptions.USERNAME.getShortName()).setRequired(false);
-		options.addOption(ConfigOptions.PASSWORD.getShortName(), ConfigOptions.PASSWORD.getName(), 
+		options.addOption(ConfigOptions.PASSWORD.getShortName(), ConfigOptions.PASSWORD.getName(),
 				true, "Password for authentication.").getOption(ConfigOptions.PASSWORD.getShortName()).setRequired(false);
 		options.addOption(ConfigOptions.VERBOSE.getShortName(), ConfigOptions.VERBOSE.getName(), 
-				false, "Additional logging.");		
+				false, "Additional logging.").getOption(ConfigOptions.VERBOSE.getShortName()).setOptionalArg(true);
 		options.addOption("h", "help", false, "Display command line parameters.").getOption("h").setOptionalArg(true);
 
 		return options;
@@ -78,7 +79,12 @@ public class ConfigurationBuilder {
 		
 		for (ConfigOptions option :  ConfigOptions.values()) {
 			if (cmdLine.hasOption(option.getName()) || cmdLine.hasOption(option.getShortName())) {
-				parsedOptions.put(option, cmdLine.getOptionValue(option.getShortName()));
+				if (option == ConfigOptions.VERBOSE) {
+					parsedOptions.put(option, Boolean.toString(true));
+				}
+				else {
+					parsedOptions.put(option, cmdLine.getOptionValue(option.getShortName()));
+				}
 			}
 		}
 	}

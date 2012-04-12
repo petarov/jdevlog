@@ -23,6 +23,8 @@
  */
 package net.vexelon.jdevlog;
 
+import net.vexelon.jdevlog.config.PrintHelpException;
+
 import org.apache.log4j.PropertyConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +40,14 @@ public class Main {
 		
 		PropertyConfigurator.configure("log4j.properties"); // init logging
 
-		Workflow work = new CmdLineWorkflow(args);
+		Workflow work = new shellWorkflow(args);
 		
 		try {
 			work.configure();
 			work.start();
+		}
+		catch(PrintHelpException e) {
+			// Empty
 		}
 		catch (Exception e) {
 			log.error(e.getMessage());

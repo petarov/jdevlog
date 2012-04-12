@@ -29,15 +29,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.vexelon.jdevlog.config.ConfigurationBuilder;
+import net.vexelon.jdevlog.config.ConfigurationException;
 import net.vexelon.jdevlog.config.PrintHelpException;
 
-public class CmdLineWorkflow extends Workflow {
+public class shellWorkflow extends Workflow {
 	
-	final static Logger log = LoggerFactory.getLogger(CmdLineWorkflow.class);
+	final static Logger log = LoggerFactory.getLogger(shellWorkflow.class);
 	
 	private String[] arguments;
 
-	public CmdLineWorkflow(String[] args) {
+	public shellWorkflow(String[] args) {
 		this.arguments = args;
 	}
 	
@@ -61,7 +62,11 @@ public class CmdLineWorkflow extends Workflow {
 		}
 		catch (PrintHelpException e) {
 			printHelp(builder.getCmdLineOptions());
-			
+			throw new PrintHelpException();
+		}
+		catch(Exception e) {
+			log.error("One or more parameters missing or not valid! " + e.getMessage());
+			printHelp(builder.getCmdLineOptions());
 			throw new PrintHelpException();
 		}
 	}

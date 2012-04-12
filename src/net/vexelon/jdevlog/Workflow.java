@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.vexelon.jdevlog.biztalk.SCMSource;
+import net.vexelon.jdevlog.biztalk.Transformer;
 import net.vexelon.jdevlog.config.ConfigOptions;
 import net.vexelon.jdevlog.config.Configuration;
 import net.vexelon.jdevlog.config.Defs;
@@ -41,26 +42,35 @@ abstract class Workflow {
 	
 	public abstract void configure() throws Exception; 
 	
+	/**
+	 * Initializes the SCM repository connection and produces the logs given loaded configuration
+	 * @throws Exception
+	 */
 	public void start() throws Exception {
 		
 		SCMSource scm = null;
+		Transformer transformer = null;
 		
 		// determine proper source type
 		log.debug("Constructing Version Control object ...");
 		
 		String type = configuration.getString(ConfigOptions.TYPE);
 		if (type.equalsIgnoreCase(Defs.SCM_SVN)) {
+			log.debug("SVN version control specified.");
+			
 			scm = SVNSource.newInstance(configuration);
+			transformer = new RSSTransformer(this.configuration, (SVNSource) scm);
 		}
 		else {
 			throw new RuntimeException(type + " is not yet supported!");
 		}
 		
+		// do the login and log transformation
 		scm.initialize();
 		scm.authenticate();
-
-		RSSTransformer transformer = new RSSTransformer(this.configuration);
 		transformer.transformHistoryLog(scm.getLastHistory(this.configuration.getLong(ConfigOptions.MAXLOG)));
+		
+		log.info("Transformation finished.");
 	}
 	
 }

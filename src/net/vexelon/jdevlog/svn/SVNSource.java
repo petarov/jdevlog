@@ -165,6 +165,35 @@ public class SVNSource implements SCMSource {
         return logEntries;
 	}
 	
+	/**
+	 * Get path (URL) to specific repository revision
+	 * @param revision
+	 * @return
+	 * @throws SCMException
+	 */
+	public String getRevisionPath(long revision, boolean stripRelativePath) throws SCMException {
+		
+		String url = this.configuration.get(ConfigOptions.SOURCE);
+		
+        try {
+        	url = url.replace(repository.getRepositoryRoot(false).getPath(), 
+        			String.format("%s/!svn/bc/%d", repository.getRepositoryRoot(false).getPath(), revision));
+        	
+        	if (stripRelativePath) {
+        		url = url.replace(repository.getRepositoryPath(""), "");
+        	}
+        } 
+        catch (SVNException e) {
+        	throw new SCMException("Failed to fetch latest revision!", e);
+        }	
+        
+        return url;
+	}
+	
+	public String getRevisionPath(long revision) throws SCMException {
+		return getRevisionPath(revision, false);
+	}
+	
 	// ----------------------------------------------------
 	
 	public static SVNSource newInstance(Configuration configuration) {

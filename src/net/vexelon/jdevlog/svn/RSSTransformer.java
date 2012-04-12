@@ -32,16 +32,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.jdom.CDATA;
-import org.jdom.Content;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tmatesoft.svn.core.SVNLogEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
 
-import com.sun.syndication.feed.module.content.ContentItem;
-import com.sun.syndication.feed.module.content.ContentModule;
-import com.sun.syndication.feed.module.content.ContentModuleImpl;
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -50,6 +45,7 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.SyndFeedOutput;
 
+import net.vexelon.jdevlog.biztalk.SCMException;
 import net.vexelon.jdevlog.biztalk.Transformer;
 import net.vexelon.jdevlog.config.ConfigOptions;
 import net.vexelon.jdevlog.config.Configuration;
@@ -61,24 +57,26 @@ public class RSSTransformer implements Transformer {
 	final static Logger log = LoggerFactory.getLogger(RSSTransformer.class);
 	
 	protected Configuration configuration;
+	protected SVNSource source;
 	
-	public RSSTransformer(Configuration configuration) {
+	public RSSTransformer(Configuration configuration, SVNSource source) {
 		this.configuration = configuration;
+		this.source = source;
 	}
 
 	@Override
 	public void transformHistoryLog(Collection<?> entries) throws Exception {
 		
-		Locale loc = Locale.ENGLISH;
-		Calendar cal = Calendar.getInstance(loc);
-		
 		SyndFeed feed = new SyndFeedImpl();
-		feed.setFeedType("rss_2.0");
+		feed.setFeedType(Defs.DEFAULT_FEED_TYPE);
 		
-		feed.setTitle(Defs.DEFAULT_TITLE);
+		feed.setTitle(String.format("RSS - %s", configuration.get(ConfigOptions.SOURCE)));
 		feed.setLink(configuration.get(ConfigOptions.SOURCE));
-		feed.setDescription("SVN Repository " + configuration.get(ConfigOptions.SOURCE));
-		feed.setAuthor("jdevlog");
+		feed.setDescription(String.format("SVN Repository log in RSS format - %s", configuration.get(ConfigOptions.SOURCE)));
+		feed.setAuthor(Defs.DEFAULT_AUTHOR);
+		
+		Locale loc = Locale.ENGLISH;
+		Calendar cal = Calendar.getInstance(loc);		
 		feed.setPublishedDate(cal.getTime());
 		
 		List<SyndEntry>  syndEntries = new ArrayList<SyndEntry>(configuration.getInt(ConfigOptions.MAXLOG));
@@ -87,15 +85,26 @@ public class RSSTransformer implements Transformer {
 
 	    	SVNLogEntry logEntry = (SVNLogEntry) it.next();
 	    	
-	    	// construct <entry>
-	    	String title = String.format("r%d / %s", 
+	    	// construct <item>
+	    	String title = String.format("r%d: %s", 
 	    			logEntry.getRevision(), 
 	    			StringHelper.excerpt(logEntry.getMessage(), Defs.DEFAULT_EXCERPT_SIZE)
 	    			);
-	    	SyndEntry entry = new SyndEntryImpl();
 	    	
+	    	String linkPath;
+	    	try {
+	    		linkPath = source.getRevisionPath(logEntry.getRevision());
+	    	}
+	    	catch (SCMException e) {
+	    		log.warn("Failed to set specific revision path: " + e.getMessage());
+	    		linkPath = configuration.get(ConfigOptions.SOURCE);
+			}
+	    	
+	    	String message = logEntry.getMessage();
+	    	
+	    	SyndEntry entry = new SyndEntryImpl();
 	    	entry.setTitle(title);
-	    	entry.setLink(configuration.get(ConfigOptions.SOURCE));
+	    	entry.setLink(linkPath);
 	    	entry.setAuthor(logEntry.getAuthor());
 	    	entry.setPublishedDate(logEntry.getDate());
 	    	
@@ -105,8 +114,6 @@ public class RSSTransformer implements Transformer {
 //        	content.setContentFormat("http://www.w3.org/TR/html4/");
 //        	content.setContentAbout("Paragraph");
         	
-        	String message = logEntry.getMessage();
-        	
 	    	// get detailed changes
             if (logEntry.getChangedPaths().size() > 0) {
             	description.setType("text/html");
@@ -114,16 +121,24 @@ public class RSSTransformer implements Transformer {
             	Set<?> changedPathsSet = logEntry.getChangedPaths().keySet();
 
                 StringBuilder fullMessage = new StringBuilder(100);
+                fullMessage.append(String.format("<b>Revision %d</b>", logEntry.getRevision()));
+                fullMessage.append(Defs.HTML_NEWLINE);
                 fullMessage.append(logEntry.getMessage());
                 fullMessage.append(Defs.HTML_NEWLINE);
+                
+                String svnRevPath = source.getRevisionPath(logEntry.getRevision(), true);
                 
                 for (Iterator<?> changedPaths = changedPathsSet.iterator(); changedPaths.hasNext();) {
                     SVNLogEntryPath entryPath = (SVNLogEntryPath) logEntry.getChangedPaths().get(changedPaths.next());
                     
                     fullMessage.append(Defs.HTML_NEWLINE);
                     fullMessage.append(entryPath.getType());
-                    fullMessage.append(" ");
+                    fullMessage.append(" <a href=\"");
+                    fullMessage.append(svnRevPath);
                     fullMessage.append(entryPath.getPath());
+                    fullMessage.append(" \">");
+                    fullMessage.append(entryPath.getPath());
+                    fullMessage.append("</a>");
                 }
                 
                 message = fullMessage.toString();
@@ -148,7 +163,7 @@ public class RSSTransformer implements Transformer {
             
             entry.setDescription(description);
             
-            // set RSS <entry>
+            // set RSS <item>
             syndEntries.add(entry);
         }   
 	    

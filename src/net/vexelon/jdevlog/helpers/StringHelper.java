@@ -25,6 +25,12 @@ package net.vexelon.jdevlog.helpers;
 
 public class StringHelper {
 	
+	/**
+	 * Create an excerpt of a large string
+	 * @param message - String message
+	 * @param maxSize - Maximum excerpt size
+	 * @return
+	 */
 	public static String excerpt(String message, int maxSize) {
 		if (message.length() > maxSize) {
 			return message.substring(0, maxSize).concat("...");

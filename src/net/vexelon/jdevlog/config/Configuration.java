@@ -34,6 +34,10 @@ public class Configuration {
 		parsedOptions = new HashMap<ConfigOptions, String>(builder.getParsedOptions());
 	}
 	
+	/**
+	 * Validates loaded configurations and produces exception if one or more required params are not available
+	 * @throws ConfigurationException
+	 */
 	public void validate() throws ConfigurationException {
 		if (!parsedOptions.containsKey(ConfigOptions.SOURCE)) {
 			throw new ConfigurationException("(source) Source not specified!");

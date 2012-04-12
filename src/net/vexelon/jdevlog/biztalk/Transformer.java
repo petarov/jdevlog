@@ -27,6 +27,11 @@ import java.util.Collection;
 
 public interface Transformer {
 	
+	/**
+	 * Transforms a list of log entries into an RSS file on the file-system
+	 * @param entries
+	 * @throws Exception
+	 */
 	public void transformHistoryLog(Collection<?> entries) throws Exception;
 
 }
