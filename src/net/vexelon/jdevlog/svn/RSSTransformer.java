@@ -77,7 +77,7 @@ public class RSSTransformer implements Transformer {
 		
 		feed.setTitle(Defs.DEFAULT_TITLE);
 		feed.setLink(configuration.get(ConfigOptions.SOURCE));
-		feed.setDescription("LAINA");
+		feed.setDescription("SVN Repository " + configuration.get(ConfigOptions.SOURCE));
 		feed.setAuthor("jdevlog");
 		feed.setPublishedDate(cal.getTime());
 		
@@ -95,20 +95,17 @@ public class RSSTransformer implements Transformer {
 	    	SyndEntry entry = new SyndEntryImpl();
 	    	
 	    	entry.setTitle(title);
-	    	entry.setLink("");
+	    	entry.setLink(configuration.get(ConfigOptions.SOURCE));
 	    	entry.setAuthor(logEntry.getAuthor());
 	    	entry.setPublishedDate(logEntry.getDate());
-//	    	cal.setTime(logEntry.getDate());
-//	    	entry.setPubDate(cal.getTime());
-//	    	entry.setPubDate(cal.getTime());
 	    	
         	SyndContent description = new SyndContentImpl();
-        	ContentItem content = new ContentItem(); // Rome RSS module
-//        	content.setContentEncoding("text/html");
-        	content.setContentFormat("http://www.w3.org/TR/html4/");
-        	content.setContentAbout("Paragraph");
+//        	ContentItem content = new ContentItem(); // Rome RSS module
+////        	content.setContentEncoding("text/html");
+//        	content.setContentFormat("http://www.w3.org/TR/html4/");
+//        	content.setContentAbout("Paragraph");
         	
-        	String message = null;//logEntry.getMessage();
+        	String message = logEntry.getMessage();
         	
 	    	// get detailed changes
             if (logEntry.getChangedPaths().size() > 0) {
@@ -118,39 +115,38 @@ public class RSSTransformer implements Transformer {
 
                 StringBuilder fullMessage = new StringBuilder(100);
                 fullMessage.append(logEntry.getMessage());
-//                fullMessage.append(Defs.HTML_NEWLINE);
+                fullMessage.append(Defs.HTML_NEWLINE);
                 
                 for (Iterator<?> changedPaths = changedPathsSet.iterator(); changedPaths.hasNext();) {
                     SVNLogEntryPath entryPath = (SVNLogEntryPath) logEntry.getChangedPaths().get(changedPaths.next());
                     
-                    fullMessage.append("<p>");
+                    fullMessage.append(Defs.HTML_NEWLINE);
                     fullMessage.append(entryPath.getType());
                     fullMessage.append(" ");
                     fullMessage.append(entryPath.getPath());
-                    fullMessage.append("</p>");
                 }
                 
                 message = fullMessage.toString();
             }
             
             // set contents (Thanks!! goes to Mark McLaren / http://stackoverflow.com/questions/9887432/putting-contentencoded-in-rss-feed-using-rome)
-            description.setValue(message);
-            content.setContentValue(message);
+            description.setValue(message.replace("\n", Defs.HTML_NEWLINE));
+//            content.setContentValue(message);
+//            
+//            CDATA cdata = new CDATA(message);
+//            List<Content> contentValueDOM = new ArrayList<Content>(); 
+//            contentValueDOM.add(cdata);
+//            content.setContentValueDOM(contentValueDOM);
+//            
+//            List<ContentItem> contents = new ArrayList<ContentItem>();
+//            contents.add(content);
+//            
+//            ContentModule contentModule = new ContentModuleImpl(); 
+//            contentModule.setContents(contents);
+//            contentModule.setContentItems(contents);
+//            entry.getModules().add(contentModule);
             
-            CDATA cdata = new CDATA(message);
-            List<Content> contentValueDOM = new ArrayList<Content>(); 
-            contentValueDOM.add(cdata);
-            content.setContentValueDOM(contentValueDOM);
-            
-            List<ContentItem> contents = new ArrayList<ContentItem>();
-            contents.add(content);
-            
-            ContentModule contentModule = new ContentModuleImpl(); 
-            contentModule.setContents(contents);
-            contentModule.setContentItems(contents);
-            entry.getModules().add(contentModule);
-            
-//            entry.setDescription(description);
+            entry.setDescription(description);
             
             // set RSS <entry>
             syndEntries.add(entry);
