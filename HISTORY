@@ -1,3 +1,12 @@
 JDevLog Changes
+----------------------
+
+V1.0.0
+ * Improvement/Change - Support for SVN repositories.
+ * Improvement/Change - Configurable amount of log messages to retrieve.
+ * Improvement/Change - Produced RSS now contains links and additional html tags for better visualization.
+ 
+V0.9
+ * Initial prototype release
 
 
