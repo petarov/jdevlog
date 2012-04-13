@@ -26,17 +26,13 @@ package net.vexelon.jdevlog.biztalk;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.vexelon.jdevlog.config.ConfigOptions;
-import net.vexelon.jdevlog.config.Configuration;
 import net.vexelon.jdevlog.helpers.IOHelper;
-import net.vexelon.jdevlog.svn.RSSTransformer;
 
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedOutput;
@@ -45,11 +41,10 @@ public abstract class Transformer {
 	
 	final static Logger log = LoggerFactory.getLogger(Transformer.class);
 	
-	protected Configuration configuration;
+//	protected Configuration configuration;
 	
-	public Transformer(Configuration configuration) {
-		this.configuration = configuration;
-	}
+//	public Transformer() {
+//	}
 	
 	/**
 	 * Outputs RSS feed object to configured output file

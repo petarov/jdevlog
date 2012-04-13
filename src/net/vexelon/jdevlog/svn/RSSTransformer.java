@@ -43,7 +43,6 @@ import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
-import com.sun.syndication.io.SyndFeedOutput;
 
 import net.vexelon.jdevlog.biztalk.SCMException;
 import net.vexelon.jdevlog.biztalk.Transformer;
@@ -57,9 +56,10 @@ public class RSSTransformer extends Transformer {
 	final static Logger log = LoggerFactory.getLogger(RSSTransformer.class);
 	
 	protected SVNSource source;
+	protected Configuration configuration;
 	
 	public RSSTransformer(Configuration configuration, SVNSource source) {
-		super(configuration);
+		this.configuration = configuration;
 		this.source = source;
 	}
 
@@ -68,6 +68,7 @@ public class RSSTransformer extends Transformer {
 		
 		SyndFeed feed = new SyndFeedImpl();
 		feed.setFeedType(Defs.DEFAULT_FEED_TYPE);
+		feed.setEncoding("UTF-8");
 		
 		feed.setTitle(String.format("RSS - %s", configuration.get(ConfigOptions.SOURCE)));
 		feed.setLink(configuration.get(ConfigOptions.SOURCE));

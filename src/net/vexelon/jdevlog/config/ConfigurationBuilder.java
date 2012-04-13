@@ -23,7 +23,6 @@
  */
 package net.vexelon.jdevlog.config;
 
-import java.security.KeyPair;
 import java.util.HashMap;
 import java.util.Map;
 

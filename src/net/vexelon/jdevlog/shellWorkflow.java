@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.vexelon.jdevlog.config.ConfigurationBuilder;
-import net.vexelon.jdevlog.config.ConfigurationException;
 import net.vexelon.jdevlog.config.PrintHelpException;
 
 public class shellWorkflow extends Workflow {
