@@ -52,7 +52,7 @@ public class Configuration {
 		}
 		
 		if (!parsedOptions.containsKey(ConfigOptions.MAXLOG)) {
-			parsedOptions.put(ConfigOptions.MAXLOG, String.valueOf(Defs.DEFUALT_MAX_ENTRIES));
+			parsedOptions.put(ConfigOptions.MAXLOG, String.valueOf(Defs.DEFAULT_MAX_ENTRIES));
 		}
 	}
 	

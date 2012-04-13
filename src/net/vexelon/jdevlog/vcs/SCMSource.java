@@ -21,18 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.vexelon.jdevlog.biztalk;
+package net.vexelon.jdevlog.vcs;
 
-public class SCMException extends Exception {
+import java.util.Iterator;
 
-	String guess;
+public interface SCMSource {
 	
-	public SCMException(String message, Throwable t) {
-		super(t);
-		this.guess = guess;
-	}
+	/**
+	 * Initialize required libraries and settings
+	 * @throws SCMException
+	 */
+	public void initialize() throws SCMException;
 	
-	public String getGuess() {
-		return guess;
-	}
+	/**
+	 * Connect and authenticate to the SCM repository
+	 * @throws SCMException
+	 */
+	public void authenticate() throws SCMException;
+	
+	/**
+	 * Collect a list of latest log/commit messages
+	 * @param maxEntries
+	 * @return
+	 * @throws SCMException
+	 */
+	public Iterator<?> getLastHistory(long maxEntries) throws SCMException;
+
 }

@@ -21,9 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.vexelon.jdevlog.svn;
+package net.vexelon.jdevlog.vcs.svn;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +38,10 @@ import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
-import net.vexelon.jdevlog.biztalk.SCMException;
-import net.vexelon.jdevlog.biztalk.SCMSource;
 import net.vexelon.jdevlog.config.ConfigOptions;
 import net.vexelon.jdevlog.config.Configuration;
+import net.vexelon.jdevlog.vcs.SCMException;
+import net.vexelon.jdevlog.vcs.SCMSource;
 
 /**
  * 
@@ -48,14 +49,14 @@ import net.vexelon.jdevlog.config.Configuration;
  *
  * (By example of the SVNKit wikis)
  */
-public class SVNSource implements SCMSource {
+public class SvnSource implements SCMSource {
 	
-	final static Logger log = LoggerFactory.getLogger(SVNSource.class);
+	final static Logger log = LoggerFactory.getLogger(SvnSource.class);
 	
 	protected SVNRepository repository;
 	protected Configuration configuration;
 	
-	protected SVNSource(Configuration configuration) {
+	protected SvnSource(Configuration configuration) {
 		this.configuration = configuration;
 	}
 	
@@ -100,7 +101,7 @@ public class SVNSource implements SCMSource {
 	}
 	
 	@Override
-	public Collection<?> getLastHistory(long maxEntries) throws SCMException {
+	public Iterator<?> getLastHistory(long maxEntries) throws SCMException {
         
 		long startRevision = 0;
         long endRevision = -1;//HEAD (the latest) revision
@@ -152,13 +153,12 @@ public class SVNSource implements SCMSource {
              * The return value is a Collection filled up with SVNLogEntry Objects.
              */
             logEntries = repository.log(new String[] {""}, null, startRevision, endRevision, true, true);
-
         } 
         catch (SVNException e) {
         	throw new SCMException("Failed to to collect log information!", e);
         }
         
-        return logEntries;
+        return logEntries.iterator();
 	}
 	
 	/**
@@ -192,8 +192,8 @@ public class SVNSource implements SCMSource {
 	
 	// ----------------------------------------------------
 	
-	public static SVNSource newInstance(Configuration configuration) {
-		return new SVNSource(configuration);
+	public static SvnSource newInstance(Configuration configuration) {
+		return new SvnSource(configuration);
 	}
 
 }

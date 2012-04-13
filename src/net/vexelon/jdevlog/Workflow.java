@@ -26,13 +26,14 @@ package net.vexelon.jdevlog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.vexelon.jdevlog.biztalk.SCMSource;
-import net.vexelon.jdevlog.biztalk.Transformer;
 import net.vexelon.jdevlog.config.ConfigOptions;
 import net.vexelon.jdevlog.config.Configuration;
 import net.vexelon.jdevlog.config.Defs;
-import net.vexelon.jdevlog.svn.RSSTransformer;
-import net.vexelon.jdevlog.svn.SVNSource;
+import net.vexelon.jdevlog.vcs.SCMSource;
+import net.vexelon.jdevlog.vcs.Transformer;
+import net.vexelon.jdevlog.vcs.git.GitSource;
+import net.vexelon.jdevlog.vcs.svn.RSSTransformer;
+import net.vexelon.jdevlog.vcs.svn.SvnSource;
 
 abstract class Workflow {
 	
@@ -52,14 +53,18 @@ abstract class Workflow {
 		Transformer transformer = null;
 		
 		// determine proper source type
-		log.debug("Constructing Version Control object ...");
-		
 		String type = configuration.getString(ConfigOptions.TYPE);
 		if (type.equalsIgnoreCase(Defs.SCM_SVN)) {
-			log.debug("SVN version control specified.");
+			log.debug("Subversion repository {} specified.", configuration.get(ConfigOptions.SOURCE));
 			
-			scm = SVNSource.newInstance(configuration);
-			transformer = new RSSTransformer(this.configuration, (SVNSource) scm);
+			scm = SvnSource.newInstance(configuration);
+			transformer = new RSSTransformer(this.configuration, (SvnSource) scm);
+		}
+		else if (type.equalsIgnoreCase(Defs.SCM_GIT)) {
+			log.debug("Git repository {} specified.", configuration.get(ConfigOptions.SOURCE));
+			
+			scm = GitSource.newInstance(configuration);
+			transformer = new net.vexelon.jdevlog.vcs.git.RSSTransformer(this.configuration);
 		}
 		else {
 			throw new RuntimeException(type + " is not yet supported!");

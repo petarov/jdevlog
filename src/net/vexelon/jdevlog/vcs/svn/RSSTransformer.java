@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.vexelon.jdevlog.svn;
+package net.vexelon.jdevlog.vcs.svn;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,46 +44,33 @@ import com.sun.syndication.feed.synd.SyndEntryImpl;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
 
-import net.vexelon.jdevlog.biztalk.SCMException;
-import net.vexelon.jdevlog.biztalk.Transformer;
 import net.vexelon.jdevlog.config.ConfigOptions;
 import net.vexelon.jdevlog.config.Configuration;
 import net.vexelon.jdevlog.config.Defs;
 import net.vexelon.jdevlog.helpers.StringHelper;
+import net.vexelon.jdevlog.vcs.SCMException;
+import net.vexelon.jdevlog.vcs.Transformer;
 
 public class RSSTransformer extends Transformer {
 	
 	final static Logger log = LoggerFactory.getLogger(RSSTransformer.class);
 	
-	protected SVNSource source;
-	protected Configuration configuration;
+	protected SvnSource source;
 	
-	public RSSTransformer(Configuration configuration, SVNSource source) {
-		this.configuration = configuration;
+	public RSSTransformer(Configuration configuration, SvnSource source) {
+		super(configuration);
 		this.source = source;
 	}
 
 	@Override
-	public void transformHistoryLog(Collection<?> entries) throws Exception {
+	public void transformHistoryLog(Iterator<?> entriesIterator) throws Exception {
 		
-		SyndFeed feed = new SyndFeedImpl();
-		feed.setFeedType(Defs.DEFAULT_FEED_TYPE);
-		feed.setEncoding("UTF-8");
+		SyndFeed feed = createFeed(configuration);
+		List<SyndEntry> syndEntries = new ArrayList<SyndEntry>(configuration.getInt(ConfigOptions.MAXLOG));
 		
-		feed.setTitle(String.format("RSS - %s", configuration.get(ConfigOptions.SOURCE)));
-		feed.setLink(configuration.get(ConfigOptions.SOURCE));
-		feed.setDescription(String.format("SVN Repository log in RSS format - %s", configuration.get(ConfigOptions.SOURCE)));
-		feed.setAuthor(Defs.DEFAULT_AUTHOR);
-		
-		Locale loc = Locale.ENGLISH;
-		Calendar cal = Calendar.getInstance(loc);		
-		feed.setPublishedDate(cal.getTime());
-		
-		List<SyndEntry>  syndEntries = new ArrayList<SyndEntry>(configuration.getInt(ConfigOptions.MAXLOG));
-		
-	    for (Iterator<?> it = entries.iterator(); it.hasNext();) {
+	    for (; entriesIterator.hasNext();) {
 
-	    	SVNLogEntry logEntry = (SVNLogEntry) it.next();
+	    	SVNLogEntry logEntry = (SVNLogEntry) entriesIterator.next();
 	    	
 	    	// construct <item>
 	    	String title = String.format("r%d: %s", 
@@ -168,7 +155,6 @@ public class RSSTransformer extends Transformer {
         }   
 	    
 	    feed.setEntries(syndEntries);
-	    
 	    saveFeed(feed, new File(configuration.getString(ConfigOptions.DESTINATION)));
 	}
 }

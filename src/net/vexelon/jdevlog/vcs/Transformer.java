@@ -21,30 +21,56 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.vexelon.jdevlog.biztalk;
+package net.vexelon.jdevlog.vcs;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.vexelon.jdevlog.config.ConfigOptions;
+import net.vexelon.jdevlog.config.Configuration;
+import net.vexelon.jdevlog.config.Defs;
 import net.vexelon.jdevlog.helpers.IOHelper;
 
 import com.sun.syndication.feed.synd.SyndFeed;
+import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.SyndFeedOutput;
 
 public abstract class Transformer {
 	
 	final static Logger log = LoggerFactory.getLogger(Transformer.class);
 	
-//	protected Configuration configuration;
+	protected Configuration configuration;
 	
-//	public Transformer() {
-//	}
+	public Transformer(Configuration configuration) {
+		this.configuration = configuration;
+	}
+	
+	public SyndFeed createFeed(Configuration configuration) {
+		
+		SyndFeed feed = new SyndFeedImpl();
+		feed.setFeedType(Defs.DEFAULT_FEED_TYPE);
+		feed.setEncoding("UTF-8");
+		
+		feed.setTitle(String.format("RSS - %s", configuration.get(ConfigOptions.SOURCE)));
+		feed.setLink(configuration.get(ConfigOptions.SOURCE));
+		feed.setDescription(String.format("SVN Repository log in RSS format - %s", configuration.get(ConfigOptions.SOURCE)));
+		feed.setAuthor(Defs.DEFAULT_AUTHOR);
+		
+		Locale loc = Locale.ENGLISH;
+		Calendar cal = Calendar.getInstance(loc);		
+		feed.setPublishedDate(cal.getTime());
+		
+		return feed;
+	}
 	
 	/**
 	 * Outputs RSS feed object to configured output file
@@ -85,6 +111,6 @@ public abstract class Transformer {
 	 * @param entries
 	 * @throws Exception
 	 */
-	public abstract void transformHistoryLog(Collection<?> entries) throws Exception;
+	public abstract void transformHistoryLog(Iterator<?> entriesIterator) throws Exception;
 
 }

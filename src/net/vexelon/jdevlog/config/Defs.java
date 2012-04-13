@@ -32,7 +32,8 @@ public final class Defs {
 	public final static String DEFAULT_AUTHOR = "jdevlog";
 	public final static String DEFAULT_TITLE = "jdevlog - Version Control RSS generator - https://github.com/petarov/jdevlog";
 	public final static int DEFAULT_EXCERPT_SIZE = 30;
-	public final static int DEFUALT_MAX_ENTRIES = 50;
+	public final static int DEFAULT_MAX_ENTRIES = 50;
+	public final static int DEFAULT_GIT_SHORTREV_SIZE = 7;
 	
 	public final static String SCM_SVN = "svn";
 	public final static String SCM_GIT = "git";
