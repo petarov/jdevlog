@@ -1,6 +1,9 @@
 JDevLog Changes
 ----------------------
 
+V1.0.1
+ * Improvement/Change - Fixed Issue #1: RSS feed is not saved as UTF-8 encoded file
+
 V1.0.0
  * Improvement/Change - Support for SVN repositories.
  * Improvement/Change - Configurable amount of log messages to retrieve.

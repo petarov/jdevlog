@@ -52,15 +52,14 @@ import net.vexelon.jdevlog.config.Configuration;
 import net.vexelon.jdevlog.config.Defs;
 import net.vexelon.jdevlog.helpers.StringHelper;
 
-public class RSSTransformer implements Transformer {
+public class RSSTransformer extends Transformer {
 	
 	final static Logger log = LoggerFactory.getLogger(RSSTransformer.class);
 	
-	protected Configuration configuration;
 	protected SVNSource source;
 	
 	public RSSTransformer(Configuration configuration, SVNSource source) {
-		this.configuration = configuration;
+		super(configuration);
 		this.source = source;
 	}
 
@@ -169,10 +168,6 @@ public class RSSTransformer implements Transformer {
 	    
 	    feed.setEntries(syndEntries);
 	    
-	    File fileOut = new File(configuration.getString(ConfigOptions.DESTINATION));
-		log.info("Saving to file {} ...", fileOut.getAbsolutePath());
-	    SyndFeedOutput syndOutput = new SyndFeedOutput();
-	    syndOutput.output(feed, fileOut);
-	    log.debug("Saved.");
+	    saveFeed(feed, new File(configuration.getString(ConfigOptions.DESTINATION)));
 	}
 }

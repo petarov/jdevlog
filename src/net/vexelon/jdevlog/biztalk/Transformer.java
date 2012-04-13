@@ -23,15 +23,73 @@
  */
 package net.vexelon.jdevlog.biztalk;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Collection;
 
-public interface Transformer {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.vexelon.jdevlog.config.ConfigOptions;
+import net.vexelon.jdevlog.config.Configuration;
+import net.vexelon.jdevlog.helpers.IOHelper;
+import net.vexelon.jdevlog.svn.RSSTransformer;
+
+import com.sun.syndication.feed.synd.SyndFeed;
+import com.sun.syndication.io.SyndFeedOutput;
+
+public abstract class Transformer {
+	
+	final static Logger log = LoggerFactory.getLogger(Transformer.class);
+	
+	protected Configuration configuration;
+	
+	public Transformer(Configuration configuration) {
+		this.configuration = configuration;
+	}
+	
+	/**
+	 * Outputs RSS feed object to configured output file
+	 * @param rssFeed
+	 * @throws Exception
+	 */
+	public void saveFeed(SyndFeed rssFeed, File fileOut) throws Exception  {
+		
+		log.info("Saving to file {} ...", fileOut.getAbsolutePath());
+		
+		FileOutputStream fos = null;
+		OutputStreamWriter osw = null;
+		BufferedWriter bw = null;		
+	    
+		try {		
+			fos = new FileOutputStream(fileOut);
+			osw = new OutputStreamWriter(fos, "UTF-8");
+			bw = new BufferedWriter(osw);
+			
+		    SyndFeedOutput syndOutput = new SyndFeedOutput();
+	    	syndOutput.output(rssFeed, bw);
+	    }
+		catch(Exception e) {
+			throw e;
+		}
+	    finally {
+	    	// gracefully close streams
+	    	IOHelper.closeQuietly(bw);
+	    	IOHelper.closeQuietly(osw);
+	    	IOHelper.closeQuietly(fos);
+	    }
+	    
+	    log.debug("Saved.");		
+	}	
 	
 	/**
 	 * Transforms a list of log entries into an RSS file on the file-system
 	 * @param entries
 	 * @throws Exception
 	 */
-	public void transformHistoryLog(Collection<?> entries) throws Exception;
+	public abstract void transformHistoryLog(Collection<?> entries) throws Exception;
 
 }
