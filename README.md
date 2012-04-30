@@ -14,8 +14,6 @@ Installation is pretty straightforward:
   * Extract the Jar file and copy it somewhere on your file system.
   * Run the jar file using the java.exe and
 
-## Command line parameters
-
 ## Usage
 
 * Make sure you have the [%JAVA_HOME%](http://wso2.org/project/wsas/java/2.0/docs/setting-java-home.html) environment variable setup on your system.
