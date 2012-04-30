@@ -2,10 +2,10 @@ JDevLog Changes
 ----------------------
 
 V1.0.2
- * Fix - Nasty error messages if the log4j.properties file is not present in the same directory as jdevlog.jar.
+ * Fix - Fixed Issue #2: - Nasty error messages if the log4j.properties file is not present in the same directory as jdevlog.jar.
 
 V1.0.1
- * Improvement/Change - Fixed Issue #1: RSS feed is not saved as UTF-8 encoded file
+ * Fix - Fixed Issue #1: RSS feed is not saved as UTF-8 encoded file
 
 V1.0.0
  * Improvement/Change - Support for SVN repositories.
