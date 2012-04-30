@@ -38,17 +38,16 @@ Installation is pretty straightforward:
 
 ### Examples
 
-* Use the following on the command line to bring up help information.
+Use the following on the command line to bring up help information.
 
     %JAVA_HOME%\bin\java jdevlog.jar -h
+    
 
-
-* Use the following to generate RSS from the last 100 messages in your Subversion repository
+Use the following to generate RSS from the last 100 messages in your Subversion repository
 
     %JAVA_HOME%\bin\java -jar jdevlog.jar -source https://svn.myserver.net/repos/dev -out /var/www/devlog/my.svn.prj.rss.xml -username "iamalive" -password imdead -maxlog 100
 
-
-* Use the following to generate RSS from the last 100 messages in your Git repository
+Use the following to generate RSS from the last 100 messages in your Git repository
 
     %JAVA_HOME%\bin\java -jar jdevlog.jar -type git -source /projects/jdevlog -out /var/www/devlog/my.git.prj.rss.xml -maxlog 100
 
