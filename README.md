@@ -35,11 +35,11 @@ Installation is pretty straightforward:
      -u,--username <arg>   Username for authentication.
      -v,--verbose          Additional logging messages.
 
-E:\Tools\jdevlog>
 
 ### Examples
 
 * Use the following on the command line to bring up help information.
+
     %JAVA_HOME%\bin\java jdevlog.jar -h
 
 * Use the following to generate RSS from the last 100 messages in your Subversion repository
@@ -52,9 +52,9 @@ E:\Tools\jdevlog>
 
 ## Documentation
 
-  * Read HISTORY for latest release changes.
-  * Read LICENSE for licensing topics.
-  * Read CREDITS for contributed code and libraries.
+  * Read [HISTORY](https://github.com/petarov/jdevlog/blob/master/HISTORY) for latest release changes.
+  * Read [LICENSE](https://github.com/petarov/jdevlog/blob/master/LICENSE) for licensing topics.
+  * Read [CREDITS](https://github.com/petarov/jdevlog/blob/master/CREDITS) for contributed code and libraries.
 
 
 Have fun ;)
