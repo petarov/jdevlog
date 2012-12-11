@@ -1,25 +1,26 @@
 # _.o0 JDevLog 0o._
 
 
-## Summary
+# Summary
 JDevLog is a Java application that reads log messages from the history log of your Svn or Git repository and produces a Syndication feed file. You can upload this file to a Web server and subscribe with any RSS reader to have up-to-date info on your project.
 
-## Requirements
+# Requirements
 
   * Java 1.6/1.7 JRE/JDK
 
-## Install
+# Install
 Installation is pretty straightforward:
   * Download a copy from the [downloads](https://github.com/petarov/jdevlog/downloads) page.
   * Extract the Jar file and copy it somewhere on your file system.
   * Run the jar file using the java.exe and
 
-## Usage
+# Usage
+A few notes on usage:
 
 * Make sure you have the [%JAVA_HOME%](http://wso2.org/project/wsas/java/2.0/docs/setting-java-home.html) environment variable setup on your system.
 * Alternatively, you could also use the full path to the **java.exe** executable, e.g., E:\Java\jdk1.6\bin.
 
-### Command line parameters
+## Command line parameters
 
     usage: jdevlog.jar [options]
      -h,--help             Display command line parameters.
@@ -34,7 +35,7 @@ Installation is pretty straightforward:
      -v,--verbose          Additional logging messages.
 
 
-### Examples
+## Examples
 
 Use the following on the command line to bring up help information.
 
@@ -50,7 +51,7 @@ Use the following to generate RSS from the last 100 messages in your Git reposit
     %JAVA_HOME%\bin\java -jar jdevlog.jar -type git -source /projects/jdevlog -out /var/www/devlog/my.git.prj.rss.xml -maxlog 100
 
 
-## Documentation
+# Files
 
   * Read [HISTORY](https://github.com/petarov/jdevlog/blob/master/HISTORY) for latest release changes.
   * Read [LICENSE](https://github.com/petarov/jdevlog/blob/master/LICENSE) for licensing topics.
